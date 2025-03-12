@@ -22,7 +22,9 @@ app.use(cors({
 
 // Routes
 app.use('/api/coupons', couponRoutes);
-
+app.get('/', (req, res) => {
+  res.send('Welcome to the Coupon API!');
+});
 // Database connection
 connectDB();
 
