@@ -9,13 +9,10 @@ const couponSchema = new mongoose.Schema({
   },
   discount: {
     type: Number,
-    required: true,
-    min: 0,
-    max: 100
+    required: true
   },
   description: {
-    type: String,
-    required: true
+    type: String
   },
   isActive: {
     type: Boolean,
@@ -27,4 +24,6 @@ const couponSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Coupon', couponSchema);
+const Coupon = mongoose.model('Coupon', couponSchema);
+
+module.exports = Coupon;

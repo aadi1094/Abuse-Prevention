@@ -70,17 +70,10 @@ const claimCoupon = async (req, res) => {
 // Get available coupon count (for frontend display)
 const getAvailableCoupons = async (req, res) => {
   try {
-    const count = await Coupon.countDocuments({ isActive: true });  // Changed from assigned: false
-    res.json({ 
-      success: true,
-      count,
-      message: count > 0 ? 'Coupons available' : 'No coupons available'
-    });
+    const count = await Coupon.countDocuments({ assigned: false });
+    res.json({ count });
   } catch (error) {
-    res.status(500).json({ 
-      success: false, 
-      message: "Server Error" 
-    });
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
@@ -99,16 +92,17 @@ const calculateTimeRemaining = (claimTime) => {
 // Seed database with coupons (for testing)
 const seedCoupons = async (req, res) => {
   try {
+    // Check if there are already coupons
     const existingCount = await Coupon.countDocuments();
     
     if (existingCount > 0) {
-      await Coupon.updateMany({}, { isActive: true }); // Reset existing coupons
       return res.json({
-        success: true,
-        message: 'Existing coupons reset'
+        success: false,
+        message: 'Coupons already exist'
       });
     }
     
+    // Sample coupon data with updated schema
     const couponData = Array.from({ length: 20 }, (_, i) => ({
       code: `COUPON${(i + 1).toString().padStart(3, '0')}`,
       discount: 10 + (i % 5) * 10,

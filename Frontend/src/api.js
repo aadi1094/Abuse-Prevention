@@ -1,29 +1,27 @@
 // Frontend/src/api.js
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://your-backend-domain.vercel.app/api'
+    : 'http://localhost:5000/api');
 
 // Create an axios instance with credentials
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Important for cookies to work
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 // Get available coupons
 export const getAvailableCoupons = async () => {
   try {
-    const response = await fetch(`${API_URL}/api/coupons/available`, {
-      credentials: 'include',
-    });
-    const data = await response.json();
-    
-    if (!data.success) {
-      throw new Error(data.message);
-    }
-    
-    return data;
+    const response = await api.get('/api/coupons/available');
+    return response.data;
   } catch (error) {
-    console.error('Error fetching coupon count:', error);
+    console.error('Error fetching coupons:', error);
     throw error;
   }
 };
