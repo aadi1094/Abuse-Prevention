@@ -1,10 +1,9 @@
 // Frontend/src/api.js
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 
-  (process.env.NODE_ENV === 'production' 
-    ? 'https://your-backend-domain.vercel.app/api'
-    : 'http://localhost:5000/api');
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? '/api'  // Use relative path in production
+  : 'http://localhost:5000/api';
 
 // Create an axios instance with credentials
 const api = axios.create({

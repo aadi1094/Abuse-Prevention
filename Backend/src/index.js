@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 require('dotenv').config();
 
 // Import routes
@@ -16,8 +17,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://your-frontend-domain.vercel.app']
+  origin: process.env.NODE_ENV === 'production' 
+    ? true  // Allow all origins in production since we're serving frontend
     : ['http://localhost:5173', 'http://127.0.0.1:5173'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -42,6 +43,19 @@ if (process.env.NODE_ENV === 'production') {
       error: 'Too many requests from this IP, please try again after an hour'
     }
   }));
+}
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  const __dirname = path.resolve();
+  
+  // Serve frontend static files
+  app.use(express.static(path.join(__dirname, '../Frontend/dist')));
+  
+  // Handle other routes by serving index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Frontend/dist/index.html'));
+  });
 }
 
 // Routes
