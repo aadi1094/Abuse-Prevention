@@ -6,8 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "build": "npm install && cd ../Frontend && npm install && npm run build && cp -r dist ../Backend/",
-    "postinstall": "cd ../Frontend && npm install && npm run build && cp -r dist ../Backend/"
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
@@ -21,9 +20,7 @@
     "express-rate-limit": "^7.5.0",
     "geoip-lite": "^1.4.10",
     "ip": "^2.0.1",
-    "mongoose": "^8.12.1",
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.2.0"
+    "mongoose": "^8.12.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
