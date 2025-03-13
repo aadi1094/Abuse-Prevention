@@ -30,7 +30,10 @@ const claimCoupon = async (req, res) => {
     );
 
     if (!coupon) {
-      return res.status(404).json({ message: "No coupons available at this time." });
+      return res.status(404).json({
+        success: false,
+        message: "No coupons available at this time."
+      });
     }
 
     // Record this claim to prevent abuse
@@ -46,10 +49,11 @@ const claimCoupon = async (req, res) => {
     res.cookie("couponClaimed", "true", { 
       maxAge: 60 * 60 * 1000, // 1 hour
       httpOnly: true,
-      sameSite: 'strict'
+      sameSite: 'none',  // Changed for cross-origin
+      secure: true       // Required with sameSite: 'none'
     });
 
-    res.json({ 
+    return res.json({ 
       success: true,
       message: "Coupon claimed successfully!", 
       data: {             // Changed to match frontend expectations
@@ -60,9 +64,9 @@ const claimCoupon = async (req, res) => {
     });
   } catch (error) {
     console.error("Coupon claim error:", error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       success: false,
-      message: "Server Error" 
+      message: "Failed to claim coupon. Please try again later." 
     });
   }
 };

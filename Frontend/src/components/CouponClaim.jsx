@@ -16,6 +16,7 @@ const CouponClaim = () => {
     
     try {
       const response = await claimCoupon();
+      console.log('Claim response:', response); // Add logging
       
       if (response.success) {
         setCoupon(response.data);
@@ -28,19 +29,11 @@ const CouponClaim = () => {
         throw new Error(response.message || 'Failed to claim coupon');
       }
     } catch (err) {
-      console.error('Error claiming coupon:', err);
-      
-      // Check if the error contains wait time information
-      if (err.response && err.response.data) {
-        const { waitTime, message } = err.response.data;
-        setError(message || 'You cannot claim another coupon yet');
-        
-        if (waitTime) {
-          setWaitTime(waitTime);
-          setShowCountdown(true);
-        }
-      } else {
-        setError('Failed to claim coupon. Please try again later.');
+      console.error('Error in claim handler:', err);
+      setError(err.message || 'Failed to claim coupon. Please try again later.');
+      if (err.timeRemaining) {
+        setWaitTime(err.timeRemaining);
+        setShowCountdown(true);
       }
     } finally {
       setLoading(false);
