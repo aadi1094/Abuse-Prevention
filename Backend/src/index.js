@@ -49,12 +49,12 @@ if (process.env.NODE_ENV === 'production') {
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
   
-  // Serve frontend static files
-  app.use(express.static(path.join(__dirname, '../Frontend/dist')));
+  // Serve frontend static files from Backend/dist instead of Frontend/dist
+  app.use(express.static(path.join(__dirname, './dist')));
   
   // Handle other routes by serving index.html
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Frontend/dist/index.html'));
+    res.sendFile(path.join(__dirname, './dist/index.html'));
   });
 }
 
