@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "build": "npm install && mkdir -p public"
+    "prebuild": "cd ../Frontend && npm install && npm run build",
+    "build": "npm install && mkdir -p public && cp -r ../Frontend/dist/* public/"
   },
   "keywords": [],
   "author": "",

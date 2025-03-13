@@ -46,6 +46,9 @@ if (process.env.NODE_ENV === 'production') {
   }));
 }
 
+// Routes first (before static file handling)
+app.use('/api/coupons', couponRoutes);
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
@@ -59,19 +62,19 @@ if (process.env.NODE_ENV === 'production') {
   // Serve frontend static files
   app.use(express.static(publicPath));
   
-  // Handle other routes by serving index.html
-  app.get('*', (req, res) => {
+  // Handle client-side routing - serve index.html for all non-API routes
+  app.get('*', (req, res, next) => {
+    if (req.url.startsWith('/api')) {
+      return next();
+    }
     const indexPath = path.join(publicPath, 'index.html');
     if (fs.existsSync(indexPath)) {
       res.sendFile(indexPath);
     } else {
-      res.status(404).send('Frontend not built properly');
+      res.status(404).json({ message: 'Frontend assets not found' });
     }
   });
 }
-
-// Routes
-app.use('/api/coupons', couponRoutes);
 
 // Database connection
 connectDB();
