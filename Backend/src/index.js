@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 // Import routes
@@ -48,13 +49,24 @@ if (process.env.NODE_ENV === 'production') {
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
+  const publicPath = path.join(__dirname, 'public');
   
-  // Serve frontend static files from Backend/dist instead of Frontend/dist
-  app.use(express.static(path.join(__dirname, './dist')));
+  // Ensure public directory exists
+  if (!fs.existsSync(publicPath)) {
+    fs.mkdirSync(publicPath, { recursive: true });
+  }
+  
+  // Serve frontend static files
+  app.use(express.static(publicPath));
   
   // Handle other routes by serving index.html
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, './dist/index.html'));
+    const indexPath = path.join(publicPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send('Frontend not built properly');
+    }
   });
 }
 
