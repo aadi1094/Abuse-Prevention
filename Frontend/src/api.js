@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? '/api'  // Use relative path in production
-  : 'http://localhost:5000/api';
+  : 'http://localhost:5000';
 
 // Create an axios instance with credentials
 const api = axios.create({
